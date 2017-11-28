@@ -1,0 +1,27 @@
+.pic-position-fix{
+  position : absolute;
+  width : auto ;
+  height : 100% ;
+  left : 30% ;
+  right : 30 % ;
+  max-height : 100 %; 
+}
+
+.canvas-position-fix{
+  position : absolute;
+  width : 0 ;
+  height : 0 ;
+  left : 30% ;
+  right : 30 % ;
+  x : 0 ;
+  y : 0 ;
+}
+
+.div-center{
+  position : relative ;
+  text-align : center ;
+  max-height : 100% ;
+  max-width  : 100% ;
+  height : 100% ;
+  width  : 100% ;
+}
