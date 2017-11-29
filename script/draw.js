@@ -172,22 +172,19 @@ function reDrawUnderCanvas(){
   ctx.clearRect(0,0,underCanvas.width,underCanvas.height);
   ctx.strokeStyle = '#00a381' ;
   ctx.lineWidth   = 3 ;
-    
-  setTimeout(function(){
-    var imageHeight = $('#target').height() ;
-    var imageWidth  = $('#target').width()  ;
-    
-    console.log("Canvas Len = " + currentBoxes.length ) ;
-    for(var i = 0; i< currentBoxes.length ; i++ ){
-      var leftUpPointX = ( currentBoxes[i].x - currentBoxes[i].width  / 2 ) * imageWidth  ;
-      var leftUpPointY = ( currentBoxes[i].y - currentBoxes[i].height / 2 ) * imageHeight ;
-      var width   = currentBoxes[i].width  * imageWidth  ;
-      var height  = currentBoxes[i].height * imageHeight ;
-      ctx.strokeRect(leftUpPointX,leftUpPointY,width,height);
-    }
-    //ctx.stroke() ;
-    
-  },100);
+
+  var imageHeight = $('#target').height() ;
+  var imageWidth  = $('#target').width()  ;
+  
+  console.log("Canvas Len = " + currentBoxes.length ) ;
+  for(var i = 0; i< currentBoxes.length ; i++ ){
+    var leftUpPointX = ( currentBoxes[i].x - currentBoxes[i].width  / 2 ) * imageWidth  ;
+    var leftUpPointY = ( currentBoxes[i].y - currentBoxes[i].height / 2 ) * imageHeight ;
+    var width   = currentBoxes[i].width  * imageWidth  ;
+    var height  = currentBoxes[i].height * imageHeight ;
+    ctx.strokeRect(leftUpPointX,leftUpPointY,width,height);
+  }
+  //ctx.stroke() ;
 
 }
 
