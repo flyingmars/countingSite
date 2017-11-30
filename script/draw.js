@@ -30,6 +30,8 @@ $(document).ready(function(){
     imageMarginUD    =  ( windowHeight - imageFixHeight ) / 2 ;
   }
   
+  // Change the position of elements
+  
   $('#target').height(imageFixHeight) ;
   $('#target').width(imageFixWidth)   ;
   $('#target').css("left"   ,imageMarginLR);
@@ -58,6 +60,19 @@ $(document).ready(function(){
   $('#counting-object').css("left"   ,imageMarginLR);
   $('#counting-object').css("top"    ,imageMarginUD);
   
+  $('#button-send').height(windowHeight/8);
+  $('#button-send').width ( (imageMarginLR == 0) ? 100 : imageMarginLR );
+  $('#button-send').css('line-height',windowHeight/8 +"px"); 
+  $('#button-send').draggable();
+  
+  
+  $('#info-box').width ( (imageMarginLR - 10 <= 0 ) ? 400 : (imageMarginLR - 10));
+  $('#info-box').css("top", $('#button-send').height() + "px" );
+  $('#info-box').draggable();
+  
+
+  
+  // Bind KeyPress
   $(window)
   .keydown(function(event){
     if ( event.which == 17 ){
@@ -71,7 +86,7 @@ $(document).ready(function(){
   });
 
   
-  
+  // Bind Mouse
   var mouseDownX = 0 ;
   var mouseDownY = 0 ;
   var offset     = $('#canvas-shadow').offset() ;
@@ -87,12 +102,16 @@ $(document).ready(function(){
       isDown = true ;
       mouseDownX = e.pageX - offset.left ;
       mouseDownY = e.pageY - offset.top  ;
+      $("#span-ul-x").text( Math.round(mouseDownX));
+      $("#span-ul-y").text( Math.round(mouseDownY));
+      $("#span-ul-xp").text( Math.round(mouseDownX / imageFixWidth  * 10000 ) / 100);
+      $("#span-ul-yp").text( Math.round(mouseDownY / imageFixHeight * 10000 ) / 100);
     }
   })
   .mousemove(function(e){
     if ( isDown ){
       isDrag = true ;
-      drawShadowCanvasRectangle(mouseDownX,mouseDownY,e,offset);
+      drawShadowCanvasRectangle(mouseDownX,mouseDownY,e,offset,imageFixWidth,imageFixHeight);
     }
   })
   .mouseup(function(e){
@@ -115,12 +134,13 @@ $(document).ready(function(){
       };
       currentBoxes.push(record) ;
       currentBoxesIndex.push(gCounting) ;
+      
       gCounting++ ;
       reDrawUnderCanvas();
       appendAnClickableObject() ;
       
     }
-  })  ; // canvas
+  })  ; // canvas-shadow
   
 }); // ready
 
@@ -137,13 +157,13 @@ function appendAnClickableObject(){
   var leftUpPointY = ( lastBoxes.y - lastBoxes.height / 2 ) * imageHeight ;
   var width   = lastBoxes.width  * imageWidth  ;
   var height  = lastBoxes.height * imageHeight ;
+  $("#span-count").text(currentBoxes.length);
   
   $(sharpIDNew).css("position","absolute");
   $(sharpIDNew).css("left",leftUpPointX);
   $(sharpIDNew).css("top",leftUpPointY);
   $(sharpIDNew).css("width",width);
   $(sharpIDNew).css("height",height);
-  $(sharpIDNew).css("background-color", "yellow");
   $(sharpIDNew).mousedown(function(e){
     if ( e.button != 2 )
       return ;
@@ -156,22 +176,22 @@ function appendAnClickableObject(){
         currentBoxesIndex.splice(indexOfElementToDelete,1);
         currentBoxes.splice(indexOfElementToDelete,1);
         console.log("indexOfElementToDelete = " + indexOfElementToDelete ) ;
+        $("#span-count").text(currentBoxes.length);
         reDrawUnderCanvas();
       }
       $(sharpIDNew).remove() ;
     }
     
-  }); //onClick
-  
-  //currentBoxes[currentBoxes.length-1]
+  }); //mouseDown
+
 }
 
 function reDrawUnderCanvas(){
   var underCanvas = document.getElementById('canvas');
   var ctx = underCanvas.getContext('2d');
   ctx.clearRect(0,0,underCanvas.width,underCanvas.height);
-  ctx.strokeStyle = '#00a381' ;
-  ctx.lineWidth   = 3 ;
+  ctx.strokeStyle = '#e60033' ;
+  ctx.lineWidth   = 2 ;
 
   var imageHeight = $('#target').height() ;
   var imageWidth  = $('#target').width()  ;
@@ -184,25 +204,34 @@ function reDrawUnderCanvas(){
     var height  = currentBoxes[i].height * imageHeight ;
     ctx.strokeRect(leftUpPointX,leftUpPointY,width,height);
   }
-  //ctx.stroke() ;
 
 }
 
 
-function drawShadowCanvasRectangle(initX,initY,event,offset){
-  var shadowCanvas = document.getElementById('canvas-shadow');
-  var ctx = shadowCanvas.getContext('2d');
-  ctx.clearRect(0,0,shadowCanvas.width,shadowCanvas.height);
-  ctx.beginPath();
-  var lastX = event.pageX - offset.left ;
-  var lastY = event.pageY - offset.top  ;
-  var rectWidth  = -(initX - lastX) ;
-  var rectHeight = -(initY - lastY) ;
+function drawShadowCanvasRectangle(initX,initY,event,offset,imageFixWidth,imageFixHeight){
   
-  ctx.rect(initX,initY,rectWidth,rectHeight);
-  ctx.strokeStyle = 'black' ;
-  ctx.lineWidth   = 5 ;
-  ctx.stroke() ;
+    var shadowCanvas = document.getElementById('canvas-shadow');
+    var ctx = shadowCanvas.getContext('2d');
+    ctx.clearRect(0,0,shadowCanvas.width,shadowCanvas.height);
+    ctx.beginPath();
+    var lastX = event.pageX - offset.left ;
+    var lastY = event.pageY - offset.top  ;
+    var rectWidth  = -(initX - lastX) ;
+    var rectHeight = -(initY - lastY) ;
+    
+    ctx.rect(initX,initY,rectWidth,rectHeight);
+    ctx.strokeStyle = '#98d98e' ;
+    ctx.lineWidth   = 3 ;
+    ctx.stroke() ;
+    
+    $("#span-br-x").text( Math.round(lastX));
+    $("#span-br-y").text( Math.round(lastY));  
+    $("#span-br-xp").text( Math.round(lastX / imageFixWidth  * 10000 ) / 100);
+    $("#span-br-yp").text( Math.round(lastY / imageFixHeight * 10000 ) / 100);
+    
+    setTimeout(function(){
+      ctx.clearRect(0,0,shadowCanvas.width,shadowCanvas.height);
+    },1000);
 }
 
 
